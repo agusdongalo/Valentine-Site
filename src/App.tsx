@@ -186,7 +186,8 @@ export default function App() {
             style={{
               left: `${heart.left}%`,
               fontSize: `${heart.size}px`,
-              animationDelay: `${heart.delay}s`,
+              bottom: `${Math.floor(randomBetween(-10, 90))}vh`,
+              animationDelay: `-${Math.floor(heart.delay)}s`,
               animationDuration: `${heart.duration}s`,
               opacity: heart.opacity,
             }}
