@@ -9,9 +9,21 @@ const loveNotes = [
 ];
 
 const memories = [
-  { title: "First Adventure", note: "The day everything felt new and warm." },
-  { title: "Laughs & Late Nights", note: "When time disappeared and we just talked." },
-  { title: "Little Traditions", note: "Coffee, inside jokes, and tiny rituals." },
+  {
+    title: "First Adventure",
+    note: "The day everything felt new and warm.",
+    image: "/memory-first-adventure.png",
+  },
+  {
+    title: "Laughs & Late Nights",
+    note: "When time disappeared and we just talked.",
+    image: "/memory-laughs.png",
+  },
+  {
+    title: "Little Traditions",
+    note: "Coffee, inside jokes, and tiny rituals.",
+    image: "/memory-little-traditions.png",
+  },
 ];
 
 function randomBetween(min: number, max: number) {
@@ -249,7 +261,15 @@ export default function App() {
         <div className="memories">
           {memories.map((memory) => (
             <article key={memory.title} className="memory-card">
-              <div className="memory-photo">Add a photo here</div>
+              {memory.image ? (
+                <img
+                  className="memory-photo image"
+                  src={memory.image}
+                  alt={memory.title}
+                />
+              ) : (
+                <div className="memory-photo">Add a photo here</div>
+              )}
               <h3>{memory.title}</h3>
               <p>{memory.note}</p>
             </article>
