@@ -289,6 +289,21 @@ h3 {
   overflow: hidden;
 }
 
+.modal-stack {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.modal-stack .primary-button {
+  position: static;
+  transform: none;
+  margin-top: 6px;
+}
+
 .confetti-layer {
   position: absolute;
   inset: 0;

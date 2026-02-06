@@ -25,6 +25,7 @@ export default function App() {
   const [yesOffset, setYesOffset] = useState({ x: 0, y: 20 });
   const [noOffset, setNoOffset] = useState({ x: 0, y: 20 });
   const lastCursor = useRef({ x: 0, y: 0 });
+  const yesTimerRef = useRef<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const questionRef = useRef<HTMLDivElement | null>(null);
   const buttonRowRef = useRef<HTMLDivElement | null>(null);
@@ -76,6 +77,10 @@ export default function App() {
     return () => {
       window.removeEventListener("click", handleClick);
       window.removeEventListener("mousemove", handleMove);
+      if (yesTimerRef.current) {
+        window.clearTimeout(yesTimerRef.current);
+        yesTimerRef.current = null;
+      }
     };
   }, []);
 
@@ -259,7 +264,15 @@ export default function App() {
           <button
             className="primary-button"
             style={{ left: `${yesOffset.x}px`, top: `${yesOffset.y}px` }}
-            onClick={() => setYesOpen(true)}
+            onClick={() => {
+              if (yesTimerRef.current) {
+                window.clearTimeout(yesTimerRef.current);
+              }
+              yesTimerRef.current = window.setTimeout(() => {
+                setYesOpen(true);
+                yesTimerRef.current = null;
+              }, 700);
+            }}
           >
             Yes
           </button>
@@ -295,11 +308,13 @@ export default function App() {
               />
             ))}
           </div>
-          <div className="modal">
-            <h2>You just made me the happiest person</h2>
-            <p>
-              Thank you for saying yes. I promise to keep choosing you, every day.
-            </p>
+          <div className="modal-stack">
+            <div className="modal">
+              <h2>You just made me the happiest person</h2>
+              <p>
+                Thank you for saying yes. I promise to keep choosing you, every day.
+              </p>
+            </div>
             <button className="primary-button" onClick={() => setYesOpen(false)}>
               Keep smiling
             </button>
