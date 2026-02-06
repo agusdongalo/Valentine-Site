@@ -1,7 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+﻿import { useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
-
-const heartEmojis = ["<3", "<3", "<3", "<3", "<3"];
 
 const loveNotes = [
   "You make my bad days better.",
@@ -48,7 +46,7 @@ export default function App() {
     const handleClick = (event: MouseEvent) => {
       const heart = document.createElement("span");
       heart.className = "pop-heart";
-      heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+      heart.textContent = "💗";
       heart.style.left = `${event.clientX}px`;
       heart.style.top = `${event.clientY}px`;
       heart.style.fontSize = `${randomBetween(16, 28)}px`;
@@ -193,7 +191,7 @@ export default function App() {
               opacity: heart.opacity,
             }}
           >
-            {"<3"}
+            💗
           </span>
         ))}
       </div>
