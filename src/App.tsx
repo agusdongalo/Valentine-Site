@@ -42,6 +42,19 @@ export default function App() {
     []
   );
 
+  const confettiPieces = useMemo(
+    () =>
+      Array.from({ length: 70 }, (_, i) => ({
+        id: i,
+        left: randomBetween(2, 98),
+        size: randomBetween(6, 12),
+        delay: randomBetween(0, 2),
+        duration: randomBetween(2.6, 4.2),
+        hue: Math.floor(randomBetween(330, 20)),
+      })),
+    []
+  );
+
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
       const heart = document.createElement("span");
@@ -266,6 +279,22 @@ export default function App() {
 
       {yesOpen && (
         <div className="modal-backdrop" role="dialog" aria-modal="true">
+          <div className="confetti-layer" aria-hidden="true">
+            {confettiPieces.map((piece) => (
+              <span
+                key={piece.id}
+                className="confetti-piece"
+                style={{
+                  left: `${piece.left}%`,
+                  width: `${piece.size}px`,
+                  height: `${piece.size * 0.6}px`,
+                  animationDelay: `${piece.delay}s`,
+                  animationDuration: `${piece.duration}s`,
+                  backgroundColor: `hsl(${piece.hue}, 80%, 70%)`,
+                }}
+              />
+            ))}
+          </div>
           <div className="modal">
             <h2>You just made me the happiest person</h2>
             <p>
