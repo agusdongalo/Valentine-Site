@@ -24,9 +24,12 @@ export default function App() {
   const [yesOpen, setYesOpen] = useState(false);
   const [audioOn, setAudioOn] = useState(false);
   const [audioError, setAudioError] = useState(false);
-  const [noOffset, setNoOffset] = useState({ x: 0, y: 0 });
+  const [yesOffset, setYesOffset] = useState({ x: 0, y: 20 });
+  const [noOffset, setNoOffset] = useState({ x: 0, y: 20 });
+  const lastCursor = useRef({ x: 0, y: 0 });
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const questionRef = useRef<HTMLDivElement | null>(null);
+  const buttonRowRef = useRef<HTMLDivElement | null>(null);
 
   const floatingHearts = useMemo(
     () =>
@@ -53,8 +56,16 @@ export default function App() {
       window.setTimeout(() => heart.remove(), 1200);
     };
 
+    const handleMove = (event: MouseEvent) => {
+      lastCursor.current = { x: event.clientX, y: event.clientY };
+    };
+
     window.addEventListener("click", handleClick);
-    return () => window.removeEventListener("click", handleClick);
+    window.addEventListener("mousemove", handleMove);
+    return () => {
+      window.removeEventListener("click", handleClick);
+      window.removeEventListener("mousemove", handleMove);
+    };
   }, []);
 
   const toggleAudio = async () => {
@@ -76,23 +87,95 @@ export default function App() {
     }
   };
 
-  const moveNoButton = () => {
-    const wrap = questionRef.current;
+  const moveNoButton = (cursorX?: number, cursorY?: number) => {
+    const wrap = buttonRowRef.current;
     const noBtn = wrap?.querySelector<HTMLButtonElement>(".secondary-button");
-    if (!wrap) return;
+    const yesBtn = wrap?.querySelector<HTMLButtonElement>(".primary-button");
+    if (!wrap || !noBtn || !yesBtn) return;
 
     const width = wrap.clientWidth;
     const height = wrap.clientHeight;
-    const btnWidth = noBtn?.offsetWidth ?? 120;
-    const btnHeight = noBtn?.offsetHeight ?? 44;
-    const maxX = Math.max(0, width - btnWidth);
-    const maxY = Math.max(0, height - btnHeight);
+    const btnWidth = noBtn.offsetWidth;
+    const btnHeight = noBtn.offsetHeight;
+    const padding = 8;
+    const maxX = Math.max(padding, width - btnWidth - padding);
+    const maxY = Math.max(padding, height - btnHeight - padding);
+    const maxPossible = Math.hypot(maxX - padding, maxY - padding);
+    const minDodge = Math.min(160, Math.max(80, maxPossible * 0.6));
+    const minCursorDistance = 140;
+    const cursor = {
+      x: cursorX ?? lastCursor.current.x,
+      y: cursorY ?? lastCursor.current.y,
+    };
 
-    setNoOffset({
-      x: Math.floor(randomBetween(0, maxX)),
-      y: Math.floor(randomBetween(0, maxY)),
-    });
+    let nextX = noOffset.x;
+    let nextY = noOffset.y;
+
+    const yesRect = {
+      left: yesOffset.x,
+      right: yesOffset.x + yesBtn.offsetWidth,
+      top: yesOffset.y,
+      bottom: yesOffset.y + yesBtn.offsetHeight,
+    };
+
+    let fallbackX = nextX;
+    let fallbackY = nextY;
+    let bestDistance = 0;
+
+    for (let attempt = 0; attempt < 24; attempt += 1) {
+      const candidateX = Math.floor(randomBetween(padding, maxX));
+      const candidateY = Math.floor(randomBetween(padding, maxY));
+      const distance = Math.hypot(candidateX - noOffset.x, candidateY - noOffset.y);
+      const cursorDistance = Math.hypot(
+        candidateX + btnWidth / 2 - cursor.x,
+        candidateY + btnHeight / 2 - cursor.y
+      );
+
+      const overlapsYes = !(
+        candidateX + btnWidth < yesRect.left - 12 ||
+        candidateX > yesRect.right + 12 ||
+        candidateY + btnHeight < yesRect.top - 12 ||
+        candidateY > yesRect.bottom + 12
+      );
+
+      if (!overlapsYes && cursorDistance >= minCursorDistance && distance > bestDistance) {
+        bestDistance = distance;
+        fallbackX = candidateX;
+        fallbackY = candidateY;
+      }
+
+      if (distance >= minDodge && !overlapsYes && cursorDistance >= minCursorDistance) {
+        nextX = candidateX;
+        nextY = candidateY;
+        break;
+      }
+    }
+
+    if (nextX === noOffset.x && nextY === noOffset.y) {
+      nextX = fallbackX;
+      nextY = fallbackY;
+    }
+
+    setNoOffset({ x: nextX, y: nextY });
   };
+
+  useEffect(() => {
+    const wrap = buttonRowRef.current;
+    const noBtn = wrap?.querySelector<HTMLButtonElement>(".secondary-button");
+    const yesBtn = wrap?.querySelector<HTMLButtonElement>(".primary-button");
+    if (!wrap || !noBtn || !yesBtn) return;
+
+    const wrapWidth = wrap.clientWidth;
+    const gap = 16;
+    const rowWidth = wrap.clientWidth;
+    const totalWidth = yesBtn.offsetWidth + gap + noBtn.offsetWidth;
+    const yesX = Math.max(0, (rowWidth - totalWidth) / 2);
+    const noX = yesX + yesBtn.offsetWidth + gap;
+    const y = Math.max(0, (wrap.clientHeight - yesBtn.offsetHeight) / 2);
+
+    setYesOffset({ x: Math.floor(yesX), y: Math.floor(y) });
+    setNoOffset({ x: Math.floor(noX), y: Math.floor(y) });
+  }, []);
 
   return (
     <div className="page">
@@ -160,15 +243,20 @@ export default function App() {
       <section className="section question" ref={questionRef}>
         <h2>The Question</h2>
         <p className="question-text">So... will you be my Valentine?</p>
-        <div className="button-row">
-          <button className="primary-button" onClick={() => setYesOpen(true)}>
+        <div className="button-row" ref={buttonRowRef}>
+          <button
+            className="primary-button"
+            style={{ left: `${yesOffset.x}px`, top: `${yesOffset.y}px` }}
+            onClick={() => setYesOpen(true)}
+          >
             Yes
           </button>
           <button
             className="secondary-button"
-            style={{ transform: `translate(${noOffset.x}px, ${noOffset.y}px)` }}
-            onMouseEnter={moveNoButton}
-            onFocus={moveNoButton}
+            style={{ left: `${noOffset.x}px`, top: `${noOffset.y}px` }}
+            onMouseEnter={(event) => moveNoButton(event.clientX, event.clientY)}
+            onMouseMove={(event) => moveNoButton(event.clientX, event.clientY)}
+            onFocus={() => moveNoButton()}
           >
             No
           </button>

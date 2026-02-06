@@ -170,7 +170,12 @@ h3 {
 
 .question {
   position: relative;
-  min-height: 220px;
+  min-height: 240px;
+  padding: 16px 20px 44px;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
 }
 
 .question-text {
@@ -180,17 +185,17 @@ h3 {
 
 .button-row {
   position: relative;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  min-height: 90px;
+  min-height: 140px;
+  width: min(720px, 100%);
+  margin: 0 auto;
+  --btn-gap: 16px;
 }
 
 .primary-button,
 .secondary-button,
 .ghost-button {
   border: none;
-  padding: 12px 26px;
+  padding: 12px 30px;
   border-radius: 999px;
   font-size: 16px;
   cursor: pointer;
@@ -198,18 +203,41 @@ h3 {
 }
 
 .primary-button {
-  background: var(--deep-rose);
+  background: linear-gradient(180deg, #ff7c9e 0%, #e34a73 100%);
   color: #fff;
-  box-shadow: 0 12px 24px rgba(139, 30, 63, 0.35);
+  box-shadow:
+    0 16px 28px rgba(227, 74, 115, 0.45),
+    inset 0 2px 0 rgba(255, 255, 255, 0.7);
   animation: pulse 2.6s ease-in-out infinite;
+  position: absolute;
+  left: 0;
+  top: 20px;
+  width: 120px;
+  transform: translate(0, 0);
 }
 
 .secondary-button {
-  background: #fff;
-  color: var(--deep-rose);
-  border: 1px solid rgba(139, 30, 63, 0.3);
-  position: relative;
-  transform: translate(0, 0);
+  background: linear-gradient(180deg, #ff7c9e 0%, #e34a73 100%);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  position: absolute;
+  left: 0;
+  top: 20px;
+  width: 120px;
+  box-shadow:
+    0 16px 28px rgba(227, 74, 115, 0.45),
+    inset 0 2px 0 rgba(255, 255, 255, 0.7);
+}
+
+.primary-button::after,
+.secondary-button::after {
+  content: "";
+  position: absolute;
+  inset: 3px 8px auto 8px;
+  height: 40%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  pointer-events: none;
 }
 
 .ghost-button {
@@ -221,8 +249,7 @@ h3 {
 .primary-button:hover,
 .secondary-button:hover,
 .ghost-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(139, 30, 63, 0.25);
+  box-shadow: 0 18px 28px rgba(139, 30, 63, 0.25);
 }
 
 @keyframes pulse {
