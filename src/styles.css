@@ -1,0 +1,272 @@
+﻿:root {
+  --blush: #fadadd;
+  --cream: #fff6f0;
+  --deep-rose: #8b1e3f;
+  --rose: #e95b83;
+  --shadow: rgba(233, 91, 131, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Poppins", system-ui, sans-serif;
+  color: var(--deep-rose);
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.65), transparent 45%),
+    radial-gradient(circle at 85% 10%, rgba(255, 211, 229, 0.9), transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(255, 240, 246, 0.7), transparent 45%),
+    linear-gradient(135deg, var(--blush), var(--cream));
+  overflow: hidden;
+}
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.hero::before,
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hero::before {
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(250, 218, 221, 0.2) 55%,
+    rgba(221, 140, 168, 0.35) 100%
+  );
+  opacity: 0.6;
+}
+
+.hero::after {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+  background-size: 120px 120px;
+  opacity: 0.25;
+  animation: drift 16s linear infinite;
+}
+
+.content {
+  text-align: center;
+  padding: 28px 34px 32px;
+  z-index: 2;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  background: rgba(255, 246, 240, 0.7);
+  border-radius: 30px;
+  box-shadow: 0 22px 60px rgba(139, 30, 63, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+}
+
+h1 {
+  font-family: "Dancing Script", cursive;
+  font-size: clamp(40px, 7vw, 84px);
+  margin: 0 0 12px;
+  text-shadow: 0 12px 30px rgba(139, 30, 63, 0.18);
+}
+
+.subtitle {
+  margin: 0 0 24px;
+  font-size: clamp(14px, 2.4vw, 18px);
+  color: rgba(139, 30, 63, 0.7);
+}
+
+.buttons {
+  position: relative;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  min-height: 64px;
+}
+
+button {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 32px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  font-family: inherit;
+}
+
+.yes-btn {
+  background: linear-gradient(180deg, #ff7aa2, #e95b83);
+  color: #fff;
+  box-shadow: 0 18px 34px rgba(233, 91, 131, 0.4);
+  transform: scale(1);
+}
+
+.yes-btn.grow {
+  animation: heartbeat 0.28s ease;
+}
+
+.no-btn {
+  background: #fff;
+  color: var(--deep-rose);
+  box-shadow: 0 10px 20px rgba(139, 30, 63, 0.15);
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(60px);
+}
+
+.yes-btn:hover,
+.no-btn:hover {
+  filter: brightness(1.02);
+  transform: translateY(-2px);
+}
+
+.floating-hearts {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.heart {
+  position: absolute;
+  bottom: -20px;
+  font-size: 20px;
+  opacity: 0.5;
+  animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-120vh) scale(1.1);
+    opacity: 0;
+  }
+}
+
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-120px);
+  }
+}
+
+.success {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+.success.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#fireworksCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.success-overlay {
+  position: relative;
+  z-index: 2;
+  padding: 20px 28px;
+  background: rgba(255, 246, 240, 0.8);
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: popIn 0.8s ease;
+}
+
+.success-overlay h2 {
+  margin: 0;
+  font-family: "Dancing Script", cursive;
+  font-size: clamp(28px, 5vw, 48px);
+  color: var(--deep-rose);
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.success-hearts {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.success-heart {
+  position: absolute;
+  bottom: -20px;
+  animation: riseUp linear infinite;
+}
+
+@keyframes riseUp {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-120vh) scale(1.2);
+    opacity: 0;
+  }
+}
+
+.hide {
+  opacity: 0;
+  transform: scale(0.98);
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .no-btn {
+    position: fixed;
+  }
+}
