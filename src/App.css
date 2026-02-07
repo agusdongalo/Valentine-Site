@@ -251,9 +251,22 @@ h3 {
 }
 
 .ghost-button {
-  background: transparent;
-  border: 1px solid rgba(139, 30, 63, 0.3);
-  color: var(--deep-rose);
+  background: linear-gradient(180deg, #ff7c9e 0%, #e34a73 100%);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 16px 28px rgba(227, 74, 115, 0.45),
+    inset 0 2px 0 rgba(255, 255, 255, 0.7);
+}
+
+.ghost-button::after {
+  content: "";
+  position: absolute;
+  inset: 3px 8px auto 8px;
+  height: 40%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  pointer-events: none;
 }
 
 .primary-button:hover,

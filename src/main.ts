@@ -168,14 +168,15 @@ function resizeCanvas() {
 }
 
 function startPixelatedVideo() {
-  if (!ctx) return;
+  const safeCtx = ctx;
+  if (!safeCtx) return;
 
   resizeCanvas();
   const pixelSize = 10;
   const offscreen = document.createElement("canvas");
   const offscreenCtx = offscreen.getContext("2d");
 
-  function draw() {
+  function draw(ctx2d: CanvasRenderingContext2D) {
     if (fireworksVideo.readyState >= 2 && offscreenCtx) {
       const w = fireworksCanvas.width;
       const h = fireworksCanvas.height;
@@ -187,15 +188,15 @@ function startPixelatedVideo() {
       offscreen.height = scaledH;
 
       offscreenCtx.imageSmoothingEnabled = false;
-      ctx.imageSmoothingEnabled = false;
+      ctx2d.imageSmoothingEnabled = false;
 
       offscreenCtx.drawImage(fireworksVideo, 0, 0, scaledW, scaledH);
-      ctx.drawImage(offscreen, 0, 0, scaledW, scaledH, 0, 0, w, h);
+      ctx2d.drawImage(offscreen, 0, 0, scaledW, scaledH, 0, 0, w, h);
     }
-    requestAnimationFrame(draw);
+    requestAnimationFrame(() => draw(ctx2d));
   }
 
-  draw();
+  draw(safeCtx);
 }
 
 window.addEventListener("resize", () => {
